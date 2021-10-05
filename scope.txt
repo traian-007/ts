@@ -1,0 +1,50 @@
+var app = () => {
+
+    var withVar = () => {
+      for (var index=0; index < 10; index += 1) {
+        setTimeout(() => console.log(`var idx = ${index}`), 0);
+        console.log(`var index withOutSetTimeOut = ${index}`);
+      }
+    }
+  
+    var withLet = () => {
+      for (let index= 0; index < 10; index += 1) {
+        setTimeout(() => console.log(`let index = ${index}`), 0);
+        console.log(`let index withOutSetTimeOut = ${index}`);
+      }
+    }
+  
+    withVar();
+    withLet();
+  }
+  setTimeout(app, 0);
+  
+  const maxRows = 1000;
+  //maxRows = 12;
+  if (100 < maxRows) {
+    console.log(`It is within range!`);
+  }
+
+// 1.setTimeout(app, 0) pushed in Main Stack(MS);
+// 2.MS detected that setTimeout(app, 0) is web api and forward in WebApis(WA).
+// 3.setTimeout(app, 0) is pushed from WA in CallBack Queue(CQ) and wait minimum 0 s.
+// 4.(100 < maxRows) get pushed in MS;
+// 5. if (100 < maxRows) is true code in {} is executed 
+// 6 pop (100 < maxRows)..MS is empty
+// 7.in MS is pushed app()
+// 8. in MS is pushed withVar();
+// 9.in MS is checked index < 10 if is true execute 10,11,12;  if is false(when index became = 10) execute 14
+// 10.setTimeout forward to WA.
+// 11.setTimeout pushed to CQ (with global variable witch will became 10 in the end)
+// 12.in MS is executed console.log(${index})
+// 13. repeat 9,10,11,12 - 10 times...
+// 14. pop (index< 10) from MS
+// 15. pop withVar();
+// 16. in MS is pushed withLet();
+// 17.in MS is checked index < 10 if is true execute 18,19,20;  if is false execute 22
+// 18.setTimeout forward to WA.
+// 19.setTimeout pushed to CQ with local variable
+// 20.in MS is executed console.log(${index})
+// 21. repeat 18,19,20,21 - 10 times... 
+// 22. in Callback Queue is 20 anonymus functions, MS don't have code any code to witch must be executed and is free for asynchronous fucntions from CQ
+// 23. one by one functions will be shifted from CQ, pushed in MS,executed and pop from MS , first 10 from withVar() have global variable index = 10 , another 10 from withLet()
